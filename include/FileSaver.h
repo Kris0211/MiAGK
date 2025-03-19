@@ -5,6 +5,6 @@
 class FileSaver
 {
 public:
-	static void Save(const std::string& path, const std::vector<int>& data, 
+	static void SaveTGA(const std::string& path, const std::vector<int>& data, 
 		const unsigned short width, const unsigned short height);
 };
