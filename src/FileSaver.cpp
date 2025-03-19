@@ -1,10 +1,10 @@
-﻿#include "FileSaver.h"
+﻿#include "../include/FileSaver.h"
 
 #include <fstream>
 #include <ios>
 
 
-void FileSaver::Save(const std::string& path, const std::vector<int>& data, 
+void FileSaver::SaveTGA(const std::string& path, const std::vector<int>& data, 
                      const unsigned short width, const unsigned short height)
 {
 	const std::vector<unsigned short> fileHeader = {

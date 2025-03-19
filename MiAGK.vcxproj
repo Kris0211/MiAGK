@@ -127,9 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\Buffer.cpp" />
-    <ClCompile Include="include\FileSaver.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\Buffer.cpp" />
+    <ClCompile Include="src\FileSaver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Buffer.h" />

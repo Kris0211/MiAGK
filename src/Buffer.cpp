@@ -1,4 +1,4 @@
-﻿#include "Buffer.h"
+﻿#include "../include/Buffer.h"
 
 Buffer::Buffer(const int x, const int y) : _sizeX(x), _sizeY(y)
 {
