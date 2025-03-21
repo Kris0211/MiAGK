@@ -1,0 +1,3 @@
+[submodule "RasTerX"]
+	path = RasTerX
+	url = https://github.com/Kris0211/RasTerX.git
