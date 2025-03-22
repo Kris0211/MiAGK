@@ -6,7 +6,8 @@ class Buffer
 public:
 	Buffer(const int x, const int y);
 
-	void FillColor(const int color);
+	void FillColor(const unsigned int color);
+	void SetPixel(const int x, const int y, const unsigned int color);
 
 	std::vector<int>& GetColorData() { return _colorBuffer; }
 
