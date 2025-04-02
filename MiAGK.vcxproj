@@ -143,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Buffer.h" />
+    <ClInclude Include="include\Color.h" />
     <ClInclude Include="include\FileSaver.h" />
     <ClInclude Include="include\Rasterizer.h" />
     <ClInclude Include="RasTerX\include\MathUtils.hpp" />

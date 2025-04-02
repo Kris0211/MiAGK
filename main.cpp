@@ -1,32 +1,38 @@
 #include "include/Buffer.h"
 #include "include/FileSaver.h"
 #include "include/Rasterizer.h"
+#include "include/Color.h"
 
 constexpr int imgWidth = 512;
 constexpr int imgHeight = 512;
-
-constexpr unsigned int A = 0xff;
-constexpr unsigned int R_BG = 0x80;
-constexpr unsigned int G_BG = 0x00;
-constexpr unsigned int B_BG = 0xff;
-constexpr unsigned int BG_COLOR = A << 24 | R_BG << 16 | G_BG << 8 | B_BG;
-
-constexpr unsigned int R_FG = 0x00;
-constexpr unsigned int G_FG = 0xff;
-constexpr unsigned int B_FG = 0x7f;
-constexpr unsigned int TRIANGLE_COLOR = A << 24 | R_FG << 16 | G_FG << 8 | B_FG;
 
 int main(int argc, char* argv[])
 {
 	Buffer buf(imgWidth, imgHeight);
 	Rasterizer rasterizer(imgWidth, imgHeight);
 
-	rtx::Triangle tr(
-		rtx::Vector3(0.f, -0.5f, 0.f),
-		rtx::Vector3(-0.6f, 0.5f, 0.f),
-		rtx::Vector3(0.6f, 0.5f, 0.f)
+	rtx::Triangle tr1(
+		rtx::Vector3(-0.3f, 1.2f, 0.f),
+		rtx::Vector3(0.2f, 0.4f, 0.f),
+		rtx::Vector3(-0.8f, 0.4f, 0.f)
 	);
 
-	rasterizer.Render(tr, BG_COLOR, TRIANGLE_COLOR);
+	rtx::Triangle tr2(
+		rtx::Vector3(0.2f, 0.4f, 0.f),
+		rtx::Vector3(1.2f, 0.4f, 0.f),
+		rtx::Vector3(0.7f, -0.4f, 0.f)
+	);
+
+	rtx::Triangle tr3(
+		rtx::Vector3(-0.25f, 0.0f, 0.f),
+		rtx::Vector3(0.0f, -0.5f, 0.f),
+		rtx::Vector3(-0.5f, -0.5f, 0.f)
+	);
+
+	std::vector<rtx::Triangle> tris = { tr1, tr2, tr3 };
+
+	rasterizer.Render(tris, Color(Color::GRAY));
+	rasterizer.Save("image.tga");
+
 	return 0;
 }

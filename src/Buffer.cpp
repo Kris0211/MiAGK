@@ -15,6 +15,6 @@ void Buffer::FillColor(const unsigned int color)
 
 void Buffer::SetPixel(const int x, const int y, const unsigned int color)
 {
-	int pixel = x + _sizeX * ((_sizeY - 1) - y);
+	int pixel = x + _sizeX * y;
 	_colorBuffer[pixel] = color;
 }
