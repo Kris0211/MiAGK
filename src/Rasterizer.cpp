@@ -9,6 +9,7 @@ Rasterizer::Rasterizer(const int sizeX, const int sizeY)
 void Rasterizer::Render(const std::vector<rtx::Triangle>& triangles, Color bgColor)
 {
 	_colorBuffer.FillColor(bgColor.ToHex());
+	_colorBuffer.FillDepth(FLT_MAX);
 	for (const rtx::Triangle& t : triangles)
 	{
 		RenderTriangle(t);
@@ -34,6 +35,10 @@ void Rasterizer::RenderTriangle(rtx::Triangle triangle, Color color)
 	const int y2 = (triangle.GetVertB().y + 1.f) * sizeY * 0.5f;
 	const int y3 = (triangle.GetVertC().y + 1.f) * sizeY * 0.5f;
 
+	const float z1 = triangle.GetVertA().z;
+	const float z2 = triangle.GetVertB().z;
+	const float z3 = triangle.GetVertC().z;
+
 	int minX = rtx::MathUtils::Min3<int>(x1, x2, x3);
 	int maxX = rtx::MathUtils::Max3<int>(x1, x2, x3);
 	int minY = rtx::MathUtils::Min3<int>(y1, y2, y3);
@@ -58,6 +63,10 @@ void Rasterizer::RenderTriangle(rtx::Triangle triangle, Color color)
 	const int dy31 = y3 - y1;
 	//const int dy32 = y3 - y2;
 
+	const bool tl1 = (dy12 < 0 || (dy12 == 0 && dx12 > 0));
+	const bool tl2 = (dy23 < 0 || (dy23 == 0 && dx23 > 0));
+	const bool tl3 = (dy31 < 0 || (dy31 == 0 && dx31 > 0));
+
 	const float ud = 1.f / (dy23 * dx13 + dx32 * dy13);
 	const float vd = 1.f / (dy31 * dx23 + dx13 * dy23);
 
@@ -68,22 +77,32 @@ void Rasterizer::RenderTriangle(rtx::Triangle triangle, Color color)
 			const int dxs3 = screenX - x3;
 			const int dys3 = screenY - y3;
 
-			if (dx12 * (screenY - y1) - dy12 * (screenX - x1) > 0
-				&& dx23 * (screenY - y2) - dy23 * (screenX - x2) > 0
-				&& dx31 * (screenY - y3) - dy31 * (screenX - x3) > 0) 
+			const float edge1 = dx12 * (screenY - y1) - dy12 * (screenX - x1);
+			const float edge2 = dx23 * (screenY - y2) - dy23 * (screenX - x2);
+			const float edge3 = dx31 * dys3 - dy31 * dxs3;
+
+			if ((edge1 > 0 || (edge1 >= 0 && tl1))
+				&& (edge2 > 0 || (edge2 >= 0 && tl2))
+				&& (edge3 > 0 || (edge3 >= 0 && tl3)))
 			{
 
-				float barU = (dy23 * dxs3 + dx32 * dys3) * ud;
-				float barV = (dy31 * dxs3 + dx13 * dys3) * vd;
-				float barW = 1.f - barU - barV;
+				const float barU = (dy23 * dxs3 + dx32 * dys3) * ud;
+				const float barV = (dy31 * dxs3 + dx13 * dys3) * vd;
+				const float barW = 1.f - barU - barV;
 
-				rtx::Vector3 red = Color(Color::RED).ToVector();
-				rtx::Vector3 green = Color(Color::GREEN).ToVector();
-				rtx::Vector3 blue = Color(Color::BLUE).ToVector();
+				const float screenDepth = _colorBuffer.GetDepthAt(screenX, screenY);
+				const float currentDepth = barU * z1 + barV * z2 + barW * z3;
+				if (currentDepth < screenDepth) 
+				{
+					rtx::Vector3 red = Color(Color::RED).ToVector();
+					rtx::Vector3 green = Color(Color::GREEN).ToVector();
+					rtx::Vector3 blue = Color(Color::BLUE).ToVector();
 
-				rtx::Vector3 pixelColor = red * barU + green * barV + blue * barW;
+					rtx::Vector3 pixelColor = red * barU + green * barV + blue * barW;
 
-				_colorBuffer.SetPixel(screenX, screenY, Color(pixelColor).ToHex());
+					_colorBuffer.SetPixel(screenX, screenY, Color(pixelColor).ToHex());
+					_colorBuffer.SetDepthAt(screenX, screenY, currentDepth);
+				}
 			}
 		}
 	}

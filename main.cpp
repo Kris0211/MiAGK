@@ -18,15 +18,15 @@ int main(int argc, char* argv[])
 	);
 
 	rtx::Triangle tr2(
+		rtx::Vector3(-0.8f, 0.4f, 0.f),
 		rtx::Vector3(0.2f, 0.4f, 0.f),
-		rtx::Vector3(1.2f, 0.4f, 0.f),
-		rtx::Vector3(0.7f, -0.4f, 0.f)
+		rtx::Vector3(-0.3f, -0.4f, 0.f)
 	);
 
 	rtx::Triangle tr3(
-		rtx::Vector3(-0.25f, 0.0f, 0.f),
-		rtx::Vector3(0.0f, -0.5f, 0.f),
-		rtx::Vector3(-0.5f, -0.5f, 0.f)
+		rtx::Vector3(-0.3f, 0.0f, -0.5f),
+		rtx::Vector3(-0.05f, -0.5f, 0.5f),
+		rtx::Vector3(-0.55f, -0.5f, 0.5f)
 	);
 
 	std::vector<rtx::Triangle> tris = { tr1, tr2, tr3 };

@@ -3,6 +3,7 @@
 Buffer::Buffer(const int x, const int y) : _sizeX(x), _sizeY(y)
 {
 	_colorBuffer.resize(this->_sizeX * this->_sizeY);
+	_depthBuffer.resize(this->_sizeX * this->_sizeY);
 }
 
 void Buffer::FillColor(const unsigned int color)
@@ -17,4 +18,12 @@ void Buffer::SetPixel(const int x, const int y, const unsigned int color)
 {
 	int pixel = x + _sizeX * y;
 	_colorBuffer[pixel] = color;
+}
+
+void Buffer::FillDepth(const float d) 
+{
+	for (int i = 0; i < _sizeX * _sizeY; ++i) 
+	{
+		_depthBuffer[i] = d;
+	}
 }
