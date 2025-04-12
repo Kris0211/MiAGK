@@ -2,6 +2,7 @@
 #include "include/FileSaver.h"
 #include "include/Rasterizer.h"
 #include "include/Color.h"
+#include "include/VertexProcessor.h"
 
 constexpr int imgWidth = 512;
 constexpr int imgHeight = 512;
@@ -31,7 +32,13 @@ int main(int argc, char* argv[])
 
 	std::vector<rtx::Triangle> tris = { tr1, tr2, tr3 };
 
-	rasterizer.Render(tris, Color(Color::GRAY));
+	rtx::Matrix4 model;
+	model.LoadIdentity();
+	model = model * VertexProcessor::Scale(rtx::Vector3(2.f, 2.f, 2.f));
+	model = model * VertexProcessor::Rotate(-45.f, rtx::Vector3(0.f, 0.f, 1.f));
+	model = model * VertexProcessor::Translate(rtx::Vector3(-10.f, 0.5f, 0.f));
+
+	rasterizer.Render(tris, model, Color(Color::GRAY));
 	rasterizer.Save("image.tga");
 
 	return 0;

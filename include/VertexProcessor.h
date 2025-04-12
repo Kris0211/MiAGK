@@ -13,4 +13,7 @@ private:
 public:
     static rtx::Matrix4 SetPerspective(const float fovY, const float aspect, const float near, const float far);
     static rtx::Matrix4 SetLookAt(const rtx::Vector3& eye, const rtx::Vector3& center, const rtx::Vector3& up);
+    static rtx::Matrix4 Translate(const rtx::Vector3& v);
+    static rtx::Matrix4 Scale(const rtx::Vector3& v);
+    static rtx::Matrix4 Rotate(const float rot, const rtx::Vector3& v);
 };

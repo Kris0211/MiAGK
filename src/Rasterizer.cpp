@@ -5,19 +5,18 @@
 #include "../RasTerX/include/Matrix4.hpp"
 #include "../include/VertexProcessor.h"
 
-constexpr float FOV_Y = 120.f;
-constexpr float ASPECT = 1.f;
-
 Rasterizer::Rasterizer(const int sizeX, const int sizeY) 
 	: _colorBuffer(sizeX, sizeY) {}
 
-void Rasterizer::Render(const std::vector<rtx::Triangle>& triangles, Color bgColor)
+
+void Rasterizer::Render(const std::vector<rtx::Triangle>& triangles, const rtx::Matrix4& model,
+		Color bgColor)
 {
 	_colorBuffer.FillColor(bgColor.ToHex());
 	_colorBuffer.FillDepth(FLT_MAX);
 	for (const rtx::Triangle& t : triangles)
 	{
-		RenderTriangle(t);
+		RenderTriangle(t, model);
 	}
 }
 
@@ -27,30 +26,33 @@ void Rasterizer::Save(std::string fileName)
 		_colorBuffer.GetSizeX(), _colorBuffer.GetSizeY());
 }
 
-void Rasterizer::RenderTriangle(rtx::Triangle triangle, Color color)
+void Rasterizer::RenderTriangle(rtx::Triangle triangle, const rtx::Matrix4& model, Color color)
 {
-	const int sizeX = _colorBuffer.GetSizeX();
-	const int sizeY = _colorBuffer.GetSizeY();
+	const int width = _colorBuffer.GetSizeX();
+	const int height = _colorBuffer.GetSizeY();
+
+	rtx::Matrix4 projection = VertexProcessor::SetPerspective(fov, aspect, near, far);
+	rtx::Matrix4 view = VertexProcessor::SetLookAt(rtx::Vector3::Forward(), rtx::Vector3::Zero(), rtx::Vector3::Up());
 	
 	rtx::Matrix4 cam;
 	cam.LoadIdentity();
 
-	cam = cam.Mul(VertexProcessor::SetPerspective(FOV_Y, ASPECT, 0.01f, 100.f));
+	cam = cam * projection * view;
 
-	rtx::Vector4 transformedVertexA = cam * rtx::Vector4(
+	rtx::Vector4 transformedVertexA = model * cam * rtx::Vector4(
 		triangle.GetVertA().x, triangle.GetVertA().y, triangle.GetVertA().z, 1.0f);
-	const int x1 = (transformedVertexA.x + 1.0f) * sizeX * 0.5f;
-	const int y1 = (transformedVertexA.y + 1.0f) * sizeY * 0.5f;
+	const int x1 = (transformedVertexA.x + 1.0f) * width * 0.5f;
+	const int y1 = (transformedVertexA.y + 1.0f) * height * 0.5f;
 
-	rtx::Vector4 transformedVertexB = cam * rtx::Vector4(
+	rtx::Vector4 transformedVertexB = model * cam * rtx::Vector4(
 		triangle.GetVertB().x, triangle.GetVertB().y, triangle.GetVertB().z, 1.0f);
-	const int x2 = (transformedVertexB.x + 1.0f) * sizeX * 0.5f;
-	const int y2 = (transformedVertexB.y + 1.0f) * sizeY * 0.5f;
+	const int x2 = (transformedVertexB.x + 1.0f) * width * 0.5f;
+	const int y2 = (transformedVertexB.y + 1.0f) * height * 0.5f;
 
-	rtx::Vector4 transformedVertexC = cam * rtx::Vector4(
+	rtx::Vector4 transformedVertexC = model * cam * rtx::Vector4(
 		triangle.GetVertC().x, triangle.GetVertC().y, triangle.GetVertC().z, 1.0f);
-	const int x3 = (transformedVertexC.x + 1.0f) * sizeX * 0.5f;
-	const int y3 = (transformedVertexC.y + 1.0f) * sizeY * 0.5f;
+	const int x3 = (transformedVertexC.x + 1.0f) * width * 0.5f;
+	const int y3 = (transformedVertexC.y + 1.0f) * height * 0.5f;
 
 	const float z1 = triangle.GetVertA().z;
 	const float z2 = triangle.GetVertB().z;
@@ -62,9 +64,9 @@ void Rasterizer::RenderTriangle(rtx::Triangle triangle, Color color)
 	int maxY = rtx::MathUtils::Max3<int>(y1, y2, y3);
 
 	minX = (int)std::max(minX, (int)0);
-	maxX = (int)std::min(maxX, sizeX);
+	maxX = (int)std::min(maxX, width);
 	minY = (int)std::max(minY, (int)0);
-	maxY = (int)std::min(maxY, sizeY);
+	maxY = (int)std::min(maxY, height);
 
 	const int dx12 = x1 - x2;
 	const int dx13 = x1 - x3;
