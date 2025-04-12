@@ -2,6 +2,11 @@
 #include "../include/FileSaver.h"
 #include "../RasTerX/include/MathUtils.hpp"
 #include <iostream>
+#include "../RasTerX/include/Matrix4.hpp"
+#include "../include/VertexProcessor.h"
+
+constexpr float FOV_Y = 120.f;
+constexpr float ASPECT = 1.f;
 
 Rasterizer::Rasterizer(const int sizeX, const int sizeY) 
 	: _colorBuffer(sizeX, sizeY) {}
@@ -26,14 +31,26 @@ void Rasterizer::RenderTriangle(rtx::Triangle triangle, Color color)
 {
 	const int sizeX = _colorBuffer.GetSizeX();
 	const int sizeY = _colorBuffer.GetSizeY();
-
-	const int x1 = (triangle.GetVertA().x + 1.f) * sizeX * 0.5f;
-	const int x2 = (triangle.GetVertB().x + 1.f) * sizeX * 0.5f;
-	const int x3 = (triangle.GetVertC().x + 1.f) * sizeX * 0.5f;
 	
-	const int y1 = (triangle.GetVertA().y + 1.f) * sizeY * 0.5f;
-	const int y2 = (triangle.GetVertB().y + 1.f) * sizeY * 0.5f;
-	const int y3 = (triangle.GetVertC().y + 1.f) * sizeY * 0.5f;
+	rtx::Matrix4 cam;
+	cam.LoadIdentity();
+
+	cam = cam.Mul(VertexProcessor::SetPerspective(FOV_Y, ASPECT, 0.01f, 100.f));
+
+	rtx::Vector4 transformedVertexA = cam * rtx::Vector4(
+		triangle.GetVertA().x, triangle.GetVertA().y, triangle.GetVertA().z, 1.0f);
+	const int x1 = (transformedVertexA.x + 1.0f) * sizeX * 0.5f;
+	const int y1 = (transformedVertexA.y + 1.0f) * sizeY * 0.5f;
+
+	rtx::Vector4 transformedVertexB = cam * rtx::Vector4(
+		triangle.GetVertB().x, triangle.GetVertB().y, triangle.GetVertB().z, 1.0f);
+	const int x2 = (transformedVertexB.x + 1.0f) * sizeX * 0.5f;
+	const int y2 = (transformedVertexB.y + 1.0f) * sizeY * 0.5f;
+
+	rtx::Vector4 transformedVertexC = cam * rtx::Vector4(
+		triangle.GetVertC().x, triangle.GetVertC().y, triangle.GetVertC().z, 1.0f);
+	const int x3 = (transformedVertexC.x + 1.0f) * sizeX * 0.5f;
+	const int y3 = (transformedVertexC.y + 1.0f) * sizeY * 0.5f;
 
 	const float z1 = triangle.GetVertA().z;
 	const float z2 = triangle.GetVertB().z;
