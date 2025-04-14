@@ -12,33 +12,28 @@ int main(int argc, char* argv[])
 	Buffer buf(imgWidth, imgHeight);
 	Rasterizer rasterizer(imgWidth, imgHeight);
 
-	rtx::Triangle tr1(
-		rtx::Vector3(-0.3f, 1.2f, 0.f),
-		rtx::Vector3(0.2f, 0.4f, 0.f),
-		rtx::Vector3(-0.8f, 0.4f, 0.f)
-	);
+	Vertex v1(rtx::Vector3(0.9f, -0.5f, -1.0f));
+	Vertex v2(rtx::Vector3(0.0f, -0.5f, -1.0f));
+	Vertex v3(rtx::Vector3(0.0f, 0.5f, 0.0f));
 
-	rtx::Triangle tr2(
-		rtx::Vector3(-0.8f, 0.4f, 0.f),
-		rtx::Vector3(0.2f, 0.4f, 0.f),
-		rtx::Vector3(-0.3f, -0.4f, 0.f)
-	);
+	MeshTriangle t(v1, v2, v3, Color::RED, Color::GREEN, Color::BLUE);
+	std::shared_ptr<MeshTriangle> triangle = std::make_shared<MeshTriangle>(t);
 
-	rtx::Triangle tr3(
-		rtx::Vector3(-0.3f, 0.0f, -0.5f),
-		rtx::Vector3(-0.05f, -0.5f, 0.5f),
-		rtx::Vector3(-0.55f, -0.5f, 0.5f)
-	);
+	Cone c(1, 3, 16, Color::ORANGE);
+	std::shared_ptr<Cone> cone = std::make_shared<Cone>(c);
 
-	std::vector<rtx::Triangle> tris = { tr1, tr2, tr3 };
+	std::vector<std::shared_ptr<Mesh>> meshes;
+	//meshes.push_back(triangle);
+	meshes.push_back(cone);
 
 	rtx::Matrix4 model;
 	model.LoadIdentity();
-	model = model * VertexProcessor::Scale(rtx::Vector3(2.f, 2.f, 2.f));
-	model = model * VertexProcessor::Rotate(-45.f, rtx::Vector3(0.f, 0.f, 1.f));
-	model = model * VertexProcessor::Translate(rtx::Vector3(-10.f, 0.5f, 0.f));
+	model = model * VertexProcessor::Scale(rtx::Vector3(0.5f, 0.5f, 0.5f));
+	model = model * VertexProcessor::Rotate(30.f, rtx::Vector3::Right());
+	model = model * VertexProcessor::Rotate(30.f, rtx::Vector3::Forward());
+	//model = model * VertexProcessor::Translate(rtx::Vector3(1.f, -0.5f, 0.f));
 
-	rasterizer.Render(tris, model, Color(Color::GRAY));
+	rasterizer.Render(meshes, model, Color(Color::GRAY));
 	rasterizer.Save("image.tga");
 
 	return 0;

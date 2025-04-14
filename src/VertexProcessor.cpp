@@ -28,17 +28,17 @@ rtx::Matrix4 VertexProcessor::SetLookAt(const rtx::Vector3& eye, const rtx::Vect
         rtx::Vector4(0.f, 0.f, 0.f, 1.f)
     };
 
-    return world2view * Translate(rtx::Vector3(-eye.x, -eye.y, -eye.z));
+    return world2view.Mul(Translate(rtx::Vector3(-eye.x, -eye.y, -eye.z)));
 }
 
 rtx::Matrix4 VertexProcessor::Translate(const rtx::Vector3& v)
 {
-    return 
+    return
     {
         rtx::Vector4(1.f, 0.f, 0.f, v.x),
         rtx::Vector4(0.f, 1.f, 0.f, v.y),
         rtx::Vector4(0.f, 0.f, 1.f, v.z),
-        rtx::Vector4(0,0,0, 1.f)
+        rtx::Vector4(0.f, 0.f, 0.f, 1.f)
     };
 }
 
@@ -64,6 +64,6 @@ rtx::Matrix4 VertexProcessor::Rotate(const float rot, const rtx::Vector3& v)
         rtx::Vector4(vec.x * vec.x * (1 - c) + c, vec.y * vec.x * (1 - c) + vec.z * s, vec.x * vec.z * (1 - c) - vec.y * s, 0),
         rtx::Vector4(vec.x * vec.y * (1 - c) - vec.z * s, vec.y * vec.y * (1 - c) + c, vec.y * vec.z * (1 - c) + vec.x * s, 0),
         rtx::Vector4(vec.x * vec.z * (1 - c) + vec.y * s, vec.y * vec.z * (1 - c) - vec.x * s, vec.z * vec.z * (1 - c) + c, 0),
-        rtx::Vector4(0, 0, 0, 1) 
+        rtx::Vector4(0.f, 0.f, 0.f, 1.f) 
     };
 }

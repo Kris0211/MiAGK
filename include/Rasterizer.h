@@ -4,6 +4,10 @@
 #include "../RasTerX/include/Triangle.hpp"
 #include "../include/Color.h"
 #include "../RasTerX/include/Matrix4.hpp"
+#include "Mesh.h"
+#include "Cone.h"
+
+#include <memory>
 
 class Rasterizer 
 {
@@ -13,7 +17,7 @@ public:
 	void SetFov(const float fov) { this->fov = fov; }
 	void SetAspectRatio(const float aspect) { this->aspect = aspect; }
 	
-	void Render(const std::vector<rtx::Triangle>& triangles, const rtx::Matrix4& model, Color bgColor);
+	void Render(const std::vector<std::shared_ptr<Mesh>>& meshes, const rtx::Matrix4& model, Color bgColor);
 
 	void Save(std::string fileName);
 
@@ -25,5 +29,7 @@ private:
 	float near = 0.01f;
 	float far = 100.f;
 
-	void RenderTriangle(rtx::Triangle triangle, const rtx::Matrix4& model, Color color = Color(Color::WHITE));
+	void RenderCone(const Cone& cone, const rtx::Matrix4& model);
+
+	void RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4& model, Color color = Color(Color::WHITE));
 };

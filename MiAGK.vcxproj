@@ -127,6 +127,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Cone.cpp" />
+    <ClCompile Include="src\MeshTriangle.cpp" />
     <ClCompile Include="src\VertexProcessor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RasTerX\src\Matrix3.cpp" />
@@ -145,8 +147,12 @@
   <ItemGroup>
     <ClInclude Include="include\Buffer.h" />
     <ClInclude Include="include\Color.h" />
+    <ClInclude Include="include\Cone.h" />
     <ClInclude Include="include\FileSaver.h" />
+    <ClInclude Include="include\Mesh.h" />
+    <ClInclude Include="include\MeshTriangle.h" />
     <ClInclude Include="include\Rasterizer.h" />
+    <ClInclude Include="include\Vertex.h" />
     <ClInclude Include="include\VertexProcessor.h" />
     <ClInclude Include="RasTerX\include\MathUtils.hpp" />
     <ClInclude Include="RasTerX\include\Matrix3.hpp" />

@@ -4,19 +4,28 @@
 #include <iostream>
 #include "../RasTerX/include/Matrix4.hpp"
 #include "../include/VertexProcessor.h"
+#include "../include/MeshTriangle.h"
 
 Rasterizer::Rasterizer(const int sizeX, const int sizeY) 
 	: _colorBuffer(sizeX, sizeY) {}
 
 
-void Rasterizer::Render(const std::vector<rtx::Triangle>& triangles, const rtx::Matrix4& model,
+void Rasterizer::Render(const std::vector<std::shared_ptr<Mesh>>& meshes, const rtx::Matrix4& model,
 		Color bgColor)
 {
 	_colorBuffer.FillColor(bgColor.ToHex());
 	_colorBuffer.FillDepth(FLT_MAX);
-	for (const rtx::Triangle& t : triangles)
+
+	for (auto& m : meshes)
 	{
-		RenderTriangle(t, model);
+		if (auto tri = std::dynamic_pointer_cast<MeshTriangle>(m))
+		{
+			RenderTriangle(*tri, model);
+		}
+		else if (auto cone = std::dynamic_pointer_cast<Cone>(m))
+		{
+			RenderCone(*cone, model);
+		}
 	}
 }
 
@@ -26,7 +35,15 @@ void Rasterizer::Save(std::string fileName)
 		_colorBuffer.GetSizeX(), _colorBuffer.GetSizeY());
 }
 
-void Rasterizer::RenderTriangle(rtx::Triangle triangle, const rtx::Matrix4& model, Color color)
+void Rasterizer::RenderCone(const Cone& cone, const rtx::Matrix4& model)
+{
+	for (auto& triangle : cone.tris)
+	{
+		RenderTriangle(triangle, model);
+	}
+}
+
+void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4& model, Color color)
 {
 	const int width = _colorBuffer.GetSizeX();
 	const int height = _colorBuffer.GetSizeY();
