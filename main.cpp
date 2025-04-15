@@ -35,6 +35,7 @@ int main(int argc, char* argv[])
 	rtx::Matrix4 model1;
 	model1.LoadIdentity();
 	model1 = model1 * VertexProcessor::Scale(rtx::Vector3(2.f, 1.f, 0.5f));
+	model1 = model1 * VertexProcessor::Rotate(45.f, rtx::Vector3(0.f, 0.f, 1.f));
 
 	rtx::Matrix4 model2;
 	model2.LoadIdentity();

@@ -32,7 +32,8 @@ void Rasterizer::RenderTriangle(rtx::Triangle triangle, const rtx::Matrix4& mode
 	const int height = _colorBuffer.GetSizeY();
 
 	rtx::Matrix4 projection = VertexProcessor::SetPerspective(fov, aspect, near, far);
-	rtx::Matrix4 view = VertexProcessor::SetLookAt(rtx::Vector3::Forward(), rtx::Vector3::Zero(), rtx::Vector3::Up());
+	rtx::Matrix4 view = VertexProcessor::SetLookAt(
+		rtx::Vector3::Forward(), rtx::Vector3::Zero(), rtx::Vector3::Up());
 	
 	rtx::Matrix4 cam;
 	cam.LoadIdentity();
