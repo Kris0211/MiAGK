@@ -18,14 +18,7 @@ void Rasterizer::Render(const std::vector<std::shared_ptr<Mesh>>& meshes, const 
 
 	for (auto& m : meshes)
 	{
-		if (auto tri = std::dynamic_pointer_cast<MeshTriangle>(m))
-		{
-			RenderTriangle(*tri, model);
-		}
-		else if (auto cone = std::dynamic_pointer_cast<Cone>(m))
-		{
-			RenderCone(*cone, model);
-		}
+		RenderMesh(m, model);
 	}
 }
 
@@ -35,9 +28,9 @@ void Rasterizer::Save(std::string fileName)
 		_colorBuffer.GetSizeX(), _colorBuffer.GetSizeY());
 }
 
-void Rasterizer::RenderCone(const Cone& cone, const rtx::Matrix4& model)
+void Rasterizer::RenderMesh(std::shared_ptr<Mesh> mesh, const rtx::Matrix4& model)
 {
-	for (auto& triangle : cone.tris)
+	for (auto& triangle : mesh->triangles)
 	{
 		RenderTriangle(triangle, model);
 	}
@@ -49,7 +42,7 @@ void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4
 	const int height = _colorBuffer.GetSizeY();
 
 	rtx::Matrix4 projection = VertexProcessor::SetPerspective(fov, aspect, near, far);
-	rtx::Matrix4 view = VertexProcessor::SetLookAt(rtx::Vector3::Forward(), rtx::Vector3::Zero(), rtx::Vector3::Up());
+	rtx::Matrix4 view = VertexProcessor::SetLookAt(rtx::Vector3::Forward(), { 0.f, 2.f, 0.f }, rtx::Vector3::Up());
 	
 	rtx::Matrix4 cam;
 	cam.LoadIdentity();

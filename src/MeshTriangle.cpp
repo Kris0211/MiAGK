@@ -3,9 +3,6 @@
 
 MeshTriangle::MeshTriangle()
 {
-    vSize = 3;
-    tSize = 1;
-
     vertices[0].position = rtx::Vector3(-0.5f, 0.f, 0.f);
     vertices[1].position = rtx::Vector3(0.f, 0.5f, 0.f);
     vertices[2].position = rtx::Vector3(0.5f, 0.f, 0.f);
@@ -20,9 +17,6 @@ MeshTriangle::MeshTriangle()
 
 MeshTriangle::MeshTriangle(const Vertex& vertex1, const Vertex& vertex2, const Vertex& vertex3)
 {
-    vSize = 3;
-    tSize = 1;
-
     vertices.push_back(vertex1);
     vertices.push_back(vertex2);
     vertices.push_back(vertex3);
@@ -37,9 +31,6 @@ MeshTriangle::MeshTriangle(const Vertex& vertex1, const Vertex& vertex2, const V
 MeshTriangle::MeshTriangle(const Vertex& vertex1, const Vertex& vertex2, const Vertex& vertex3,
 	Color color1, Color color2, Color color3)
 {
-    vSize = 3;
-    tSize = 1;
-
     vertices.push_back(vertex1);
     vertices.push_back(vertex2);
     vertices.push_back(vertex3);

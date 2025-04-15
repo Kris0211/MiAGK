@@ -29,7 +29,7 @@ private:
 	float near = 0.01f;
 	float far = 100.f;
 
-	void RenderCone(const Cone& cone, const rtx::Matrix4& model);
+	void RenderMesh(std::shared_ptr<Mesh> mesh, const rtx::Matrix4& model);
 
 	void RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4& model, Color color = Color(Color::WHITE));
 };
