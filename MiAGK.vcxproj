@@ -131,7 +131,7 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Cone.cpp" />
     <ClCompile Include="src\MeshTriangle.cpp" />
-    <ClCompile Include="src\Sphere.cpp" />
+    <ClCompile Include="src\SphereMesh.cpp" />
     <ClCompile Include="src\VertexProcessor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RasTerX\src\Matrix3.cpp" />
@@ -155,7 +155,7 @@
     <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="include\MeshTriangle.h" />
     <ClInclude Include="include\Rasterizer.h" />
-    <ClInclude Include="include\Sphere.h" />
+    <ClInclude Include="include\SphereMesh.h" />
     <ClInclude Include="include\Torus.h" />
     <ClInclude Include="include\Vertex.h" />
     <ClInclude Include="include\VertexProcessor.h" />

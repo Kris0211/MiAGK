@@ -3,7 +3,7 @@
 #include "include/Rasterizer.h"
 #include "include/Color.h"
 #include "include/VertexProcessor.h"
-#include "include/Sphere.h"
+#include "include/SphereMesh.h"
 #include "include/Torus.h"
 
 constexpr int imgWidth = 512;
@@ -24,8 +24,8 @@ int main(int argc, char* argv[])
 	Cone c(1, 3, 16);
 	std::shared_ptr<Cone> cone = std::make_shared<Cone>(c);
 
-	Sphere s(1, 8, 8);
-	std::shared_ptr<Sphere> sphere = std::make_shared<Sphere>(s);
+	SphereMesh s(1, 8, 8);
+	std::shared_ptr<SphereMesh> sphere = std::make_shared<SphereMesh>(s);
 
 	Torus t(2, 1, 8, 6);
 	std::shared_ptr<Torus> torus = std::make_shared<Torus>(t);

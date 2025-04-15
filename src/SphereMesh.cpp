@@ -1,6 +1,7 @@
-#include "../include/Sphere.h"
+#include "../include/SphereMesh.h"
+#include "../RasTerX/include/MathUtils.hpp"
 
-Sphere::Sphere(const float radius, const int sectors, const int stacks)
+SphereMesh::SphereMesh(const float radius, const int sectors, const int stacks)
 {
     float sectorStep = TAU / sectors;
     float stackStep = PI / stacks;
