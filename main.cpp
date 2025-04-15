@@ -32,13 +32,22 @@ int main(int argc, char* argv[])
 
 	std::vector<rtx::Triangle> tris = { tr1, tr2, tr3 };
 
-	rtx::Matrix4 model;
-	model.LoadIdentity();
-	model = model * VertexProcessor::Scale(rtx::Vector3(2.f, 2.f, 2.f));
-	model = model * VertexProcessor::Rotate(-45.f, rtx::Vector3(0.f, 0.f, 1.f));
-	model = model * VertexProcessor::Translate(rtx::Vector3(-10.f, 0.5f, 0.f));
+	rtx::Matrix4 model1;
+	model1.LoadIdentity();
+	model1 = model1 * VertexProcessor::Scale(rtx::Vector3(2.f, 1.f, 0.5f));
 
-	rasterizer.Render(tris, model, Color(Color::GRAY));
+	rtx::Matrix4 model2;
+	model2.LoadIdentity();
+	model2 = model2 * VertexProcessor::Rotate(-45.f, rtx::Vector3(0.f, 0.f, 1.f));
+
+	rtx::Matrix4 model3;
+	model3.LoadIdentity();
+	model3 = model3 * VertexProcessor::Rotate(30.f, rtx::Vector3(0.f, 0.f, 1.f));
+	model3 = model3 * VertexProcessor::Translate(rtx::Vector3(0.f, -2.f, 0.f));
+
+	std::vector<rtx::Matrix4> models = { model1, model2, model3 };
+
+	rasterizer.Render(tris, models, Color(Color::GRAY));
 	rasterizer.Save("image.tga");
 
 	return 0;

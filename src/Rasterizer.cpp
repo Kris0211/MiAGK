@@ -9,14 +9,14 @@ Rasterizer::Rasterizer(const int sizeX, const int sizeY)
 	: _colorBuffer(sizeX, sizeY) {}
 
 
-void Rasterizer::Render(const std::vector<rtx::Triangle>& triangles, const rtx::Matrix4& model,
-		Color bgColor)
+void Rasterizer::Render(const std::vector<rtx::Triangle>& triangles,
+	const std::vector<rtx::Matrix4>& models, Color bgColor)
 {
 	_colorBuffer.FillColor(bgColor.ToHex());
 	_colorBuffer.FillDepth(FLT_MAX);
-	for (const rtx::Triangle& t : triangles)
+	for (int i = 0; i < triangles.size(); i++)
 	{
-		RenderTriangle(t, model);
+		RenderTriangle(triangles[i], models[i]);
 	}
 }
 

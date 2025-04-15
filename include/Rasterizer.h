@@ -13,7 +13,8 @@ public:
 	void SetFov(const float fov) { this->fov = fov; }
 	void SetAspectRatio(const float aspect) { this->aspect = aspect; }
 	
-	void Render(const std::vector<rtx::Triangle>& triangles, const rtx::Matrix4& model, Color bgColor);
+	void Render(const std::vector<rtx::Triangle>& triangles, 
+		const std::vector<rtx::Matrix4>& models, Color bgColor);
 
 	void Save(std::string fileName);
 
