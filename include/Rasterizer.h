@@ -17,7 +17,8 @@ public:
 	void SetFov(const float fov) { this->fov = fov; }
 	void SetAspectRatio(const float aspect) { this->aspect = aspect; }
 	
-	void Render(const std::vector<std::shared_ptr<Mesh>>& meshes, const rtx::Matrix4& model, Color bgColor);
+	void Render(const std::vector<std::shared_ptr<Mesh>>& meshes, 
+		const std::vector<rtx::Matrix4>& models, Color bgColor);
 
 	void Save(std::string fileName);
 

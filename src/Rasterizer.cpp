@@ -10,15 +10,15 @@ Rasterizer::Rasterizer(const int sizeX, const int sizeY)
 	: _colorBuffer(sizeX, sizeY) {}
 
 
-void Rasterizer::Render(const std::vector<std::shared_ptr<Mesh>>& meshes, const rtx::Matrix4& model,
-		Color bgColor)
+void Rasterizer::Render(const std::vector<std::shared_ptr<Mesh>>& meshes, 
+	const std::vector<rtx::Matrix4>& models, Color bgColor)
 {
 	_colorBuffer.FillColor(bgColor.ToHex());
 	_colorBuffer.FillDepth(FLT_MAX);
 
-	for (auto& m : meshes)
+	for (int i = 0; i < meshes.size(); i++)
 	{
-		RenderMesh(m, model);
+		RenderMesh(meshes[i], models[i]);
 	}
 }
 
@@ -42,7 +42,9 @@ void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4
 	const int height = _colorBuffer.GetSizeY();
 
 	rtx::Matrix4 projection = VertexProcessor::SetPerspective(fov, aspect, near, far);
-	rtx::Matrix4 view = VertexProcessor::SetLookAt(rtx::Vector3::Forward(), { 0.f, 2.f, 0.f }, rtx::Vector3::Up());
+	rtx::Matrix4 view = VertexProcessor::SetLookAt(
+		rtx::Vector3::Forward(), { 1.f, 1.f, 0.f }, rtx::Vector3::Up()
+	);
 	
 	rtx::Matrix4 cam;
 	cam.LoadIdentity();

@@ -25,8 +25,8 @@ Torus::Torus(const float majorRadius, const float minorRadius,
             Vertex v3 = { p3, CalculateNormal(p3, majorRadius, minorRadius) };
             Vertex v4 = { p4, CalculateNormal(p4, majorRadius, minorRadius) };
 
-            triangles.emplace_back(v1, v2, v3);
-            triangles.emplace_back(v1, v3, v4);
+            triangles.emplace_back(v2, v1, v3);
+            triangles.emplace_back(v3, v1, v4);
         }
     }
 }

@@ -38,7 +38,8 @@ rtx::Matrix4 VertexProcessor::Translate(const rtx::Vector3& v)
         rtx::Vector4(1.f, 0.f, 0.f, v.x),
         rtx::Vector4(0.f, 1.f, 0.f, v.y),
         rtx::Vector4(0.f, 0.f, 1.f, v.z),
-        rtx::Vector4(0.f, 0.f, 0.f, 1.f)
+        rtx::Vector4(0.f, 0.f, 0.f, 1.f),
+        //rtx::Vector4(v.x, v.y, v.z, 1.f)
     };
 }
 
