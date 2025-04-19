@@ -43,25 +43,22 @@ void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4
 
 	rtx::Matrix4 projection = VertexProcessor::SetPerspective(fov, aspect, near, far);
 	rtx::Matrix4 view = VertexProcessor::SetLookAt(
-		rtx::Vector3::Forward(), { 1.f, 1.f, 0.f }, rtx::Vector3::Up()
+		rtx::Vector3::Forward(), rtx::Vector3::Zero(), rtx::Vector3::Up()
 	);
 	
-	rtx::Matrix4 cam;
-	cam.LoadIdentity();
+	rtx::Matrix4 mvp = projection * view * model;
 
-	cam = cam * projection * view;
-
-	rtx::Vector4 transformedVertexA = model * cam * rtx::Vector4(
+	rtx::Vector4 transformedVertexA = mvp * rtx::Vector4(
 		triangle.GetVertA().x, triangle.GetVertA().y, triangle.GetVertA().z, 1.0f);
 	const int x1 = (transformedVertexA.x + 1.0f) * width * 0.5f;
 	const int y1 = (transformedVertexA.y + 1.0f) * height * 0.5f;
 
-	rtx::Vector4 transformedVertexB = model * cam * rtx::Vector4(
+	rtx::Vector4 transformedVertexB = mvp * rtx::Vector4(
 		triangle.GetVertB().x, triangle.GetVertB().y, triangle.GetVertB().z, 1.0f);
 	const int x2 = (transformedVertexB.x + 1.0f) * width * 0.5f;
 	const int y2 = (transformedVertexB.y + 1.0f) * height * 0.5f;
 
-	rtx::Vector4 transformedVertexC = model * cam * rtx::Vector4(
+	rtx::Vector4 transformedVertexC = mvp * rtx::Vector4(
 		triangle.GetVertC().x, triangle.GetVertC().y, triangle.GetVertC().z, 1.0f);
 	const int x3 = (transformedVertexC.x + 1.0f) * width * 0.5f;
 	const int y3 = (transformedVertexC.y + 1.0f) * height * 0.5f;

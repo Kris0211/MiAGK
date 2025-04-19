@@ -26,15 +26,16 @@ int main(int argc, char* argv[])
 
 	rtx::Matrix4 coneModel;
 	coneModel.LoadIdentity();
-	coneModel = coneModel * VertexProcessor::Translate({ -80.f, 0.f, 0.f });
-
+	coneModel = coneModel * VertexProcessor::Rotate(30.f, rtx::Vector3::Right());
+	coneModel = coneModel * VertexProcessor::Rotate(-45.f, rtx::Vector3::Forward());
+	coneModel = coneModel * VertexProcessor::Translate({ -0.5f, 1.f, 0.f });
 
 	SphereMesh s(0.5f, 8, 8);
 	std::shared_ptr<SphereMesh> sphere = std::make_shared<SphereMesh>(s);
 
 	rtx::Matrix4 sphereModel;
 	sphereModel.LoadIdentity();
-	sphereModel = sphereModel * VertexProcessor::Translate({ -10.f, 10.f, 0.f });
+	sphereModel = sphereModel * VertexProcessor::Translate({ 0.f, 1.f, 0.f });
 
 
 	Torus t(0.5f, 0.25f, 8, 6);
@@ -44,7 +45,7 @@ int main(int argc, char* argv[])
 	torusModel.LoadIdentity();
 	torusModel = torusModel * VertexProcessor::Rotate(30.f, rtx::Vector3::Right());
 	torusModel = torusModel * VertexProcessor::Rotate(60.f, rtx::Vector3::Forward());
-	torusModel = torusModel * VertexProcessor::Translate({ 20.f, -30.f, 0.f });
+	torusModel = torusModel * VertexProcessor::Translate({ 1.f, -0.5f, 0.f });
 
 	std::vector<std::shared_ptr<Mesh>> meshes = { cone, sphere, torus };
 	std::vector<rtx::Matrix4> models = { coneModel, sphereModel, torusModel };
