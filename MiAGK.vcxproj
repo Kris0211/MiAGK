@@ -151,11 +151,15 @@
     <ClInclude Include="include\Buffer.h" />
     <ClInclude Include="include\Color.h" />
     <ClInclude Include="include\Cone.h" />
+    <ClInclude Include="include\DirectionalLight.h" />
     <ClInclude Include="include\FileSaver.h" />
+    <ClInclude Include="include\Light.h" />
     <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="include\MeshTriangle.h" />
+    <ClInclude Include="include\PointLight.h" />
     <ClInclude Include="include\Rasterizer.h" />
     <ClInclude Include="include\SphereMesh.h" />
+    <ClInclude Include="include\SpotLight.h" />
     <ClInclude Include="include\Torus.h" />
     <ClInclude Include="include\Vertex.h" />
     <ClInclude Include="include\VertexProcessor.h" />

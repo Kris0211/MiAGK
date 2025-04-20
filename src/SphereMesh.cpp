@@ -37,8 +37,7 @@ SphereMesh::SphereMesh(const float radius, const int sectors, const int stacks)
                 triangles.emplace_back(
                     Vertex(top, top.Normal()),
                     Vertex(p2, n2),
-                    Vertex(p3, n3),
-                    Color::RED, Color::GREEN, Color::BLUE
+                    Vertex(p3, n3)
                 );
             }
             else if (i == (stacks - 1))
@@ -47,8 +46,7 @@ SphereMesh::SphereMesh(const float radius, const int sectors, const int stacks)
                 triangles.emplace_back(
                     Vertex(p2, n2),
                     Vertex(bot, bot.Normal()),
-                    Vertex(p1, n1),
-                    Color::RED, Color::GREEN, Color::BLUE
+                    Vertex(p1, n1)
                 );
             }
             else
@@ -56,14 +54,12 @@ SphereMesh::SphereMesh(const float radius, const int sectors, const int stacks)
                 triangles.emplace_back(
                     Vertex(p1, n1),
                     Vertex(p2, n2),
-                    Vertex(p3, n3),
-                    Color::RED, Color::GREEN, Color::BLUE
+                    Vertex(p3, n3)
                 );
                 triangles.emplace_back(
                     Vertex(p1, n1),
                     Vertex(p3, n3),
-                    Vertex(p4, n4),
-                    Color::RED, Color::GREEN, Color::BLUE
+                    Vertex(p4, n4)
                 );
             }
         }

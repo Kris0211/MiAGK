@@ -21,9 +21,9 @@ MeshTriangle::MeshTriangle(const Vertex& vertex1, const Vertex& vertex2, const V
     vertices.push_back(vertex2);
     vertices.push_back(vertex3);
 
-    colors.push_back(Color::AZURE);
-    colors.push_back(Color::AZURE);
-    colors.push_back(Color::AZURE);
+    colors.push_back(vertex1.color);
+    colors.push_back(vertex2.color);
+    colors.push_back(vertex3.color);
 
     indices.push_back(rtx::Vector3(0, 1, 2));
 }

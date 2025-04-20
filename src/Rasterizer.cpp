@@ -5,20 +5,23 @@
 #include "../RasTerX/include/Matrix4.hpp"
 #include "../include/VertexProcessor.h"
 #include "../include/MeshTriangle.h"
+#include "../include/PointLight.h"
+#include "../include/DirectionalLight.h"
+#include "../include/SpotLight.h"
 
 Rasterizer::Rasterizer(const int sizeX, const int sizeY) 
 	: _colorBuffer(sizeX, sizeY) {}
 
 
 void Rasterizer::Render(const std::vector<std::shared_ptr<Mesh>>& meshes, 
-	const std::vector<rtx::Matrix4>& models, Color bgColor)
+	const std::vector<rtx::Matrix4>& models, const std::vector<std::shared_ptr<Light>>& lights, Color bgColor)
 {
 	_colorBuffer.FillColor(bgColor.ToHex());
 	_colorBuffer.FillDepth(FLT_MAX);
 
 	for (int i = 0; i < meshes.size(); i++)
 	{
-		RenderMesh(meshes[i], models[i]);
+		RenderMesh(meshes[i], models[i], lights);
 	}
 }
 
@@ -28,15 +31,23 @@ void Rasterizer::Save(std::string fileName)
 		_colorBuffer.GetSizeX(), _colorBuffer.GetSizeY());
 }
 
-void Rasterizer::RenderMesh(std::shared_ptr<Mesh> mesh, const rtx::Matrix4& model)
+void Rasterizer::RenderMesh(std::shared_ptr<Mesh> mesh, const rtx::Matrix4& model, 
+	const std::vector<std::shared_ptr<Light>>& lights)
 {
 	for (auto& triangle : mesh->triangles)
 	{
-		RenderTriangle(triangle, model);
+		MeshTriangle mTriangle = triangle;
+		
+		CalculateLighting(mTriangle.vertices[0], lights);
+		CalculateLighting(mTriangle.vertices[1], lights);
+		CalculateLighting(mTriangle.vertices[2], lights);
+
+		RenderTriangle(mTriangle, model, lights);
 	}
 }
 
-void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4& model, Color color)
+void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4& model, 
+	const std::vector<std::shared_ptr<Light>>& lights, Color color)
 {
 	const int width = _colorBuffer.GetSizeX();
 	const int height = _colorBuffer.GetSizeY();
@@ -79,17 +90,14 @@ void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4
 
 	const int dx12 = x1 - x2;
 	const int dx13 = x1 - x3;
-	//const int dx21 = x2 - x1;
 	const int dx23 = x2 - x3;
 	const int dx31 = x3 - x1;
 	const int dx32 = x3 - x2;
 
 	const int dy12 = y1 - y2;
 	const int dy13 = y1 - y3;
-	//const int dy21 = y2 - y1;
 	const int dy23 = y2 - y3;
 	const int dy31 = y3 - y1;
-	//const int dy32 = y3 - y2;
 
 	const bool tl1 = (dy12 < 0 || (dy12 == 0 && dx12 > 0));
 	const bool tl2 = (dy23 < 0 || (dy23 == 0 && dx23 > 0));
@@ -122,11 +130,11 @@ void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4
 				const float currentDepth = barU * z1 + barV * z2 + barW * z3;
 				if (currentDepth < screenDepth) 
 				{
-					rtx::Vector3 red = Color(Color::RED).ToVector();
-					rtx::Vector3 green = Color(Color::GREEN).ToVector();
-					rtx::Vector3 blue = Color(Color::BLUE).ToVector();
+					rtx::Vector3 c0 = triangle.vertices[0].color.ToVector();
+					rtx::Vector3 c1 = triangle.vertices[1].color.ToVector();
+					rtx::Vector3 c2 = triangle.vertices[2].color.ToVector();
 
-					rtx::Vector3 pixelColor = red * barU + green * barV + blue * barW;
+					rtx::Vector3 pixelColor = c0 * barU + c1 * barV + c2 * barW;
 
 					_colorBuffer.SetPixel(screenX, screenY, Color(pixelColor).ToHex());
 					_colorBuffer.SetDepthAt(screenX, screenY, currentDepth);
@@ -134,4 +142,75 @@ void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4
 			}
 		}
 	}
+}
+
+void Rasterizer::CalculateLighting(Vertex& vertex, const std::vector<std::shared_ptr<Light>>& lights)
+{
+	rtx::Vector3 objectColor = Color(vertex.color).ToVector();
+	rtx::Vector3 cameraPosition = rtx::Vector3::Zero();
+	rtx::Vector3 result = rtx::Vector3::Zero();
+
+	for (const auto& light : lights)
+	{
+		rtx::Vector3 ambient;
+		rtx::Vector3 diffuse;
+		rtx::Vector3 specular;
+		rtx::Vector3 lightDir;
+		float attenuation = 1.f; // no attenuation
+
+		rtx::Vector3 ambientLight = Color(light->ambient).ToVector();
+		rtx::Vector3 diffuseLight = Color(light->diffuse).ToVector();
+		rtx::Vector3 specularLight = Color(light->specular).ToVector();
+		const float shininess = light->shininess;
+
+		if (auto pointLight = std::dynamic_pointer_cast<PointLight>(light))
+		{
+			rtx::Vector3 lightToVertex = vertex.position - pointLight->position;
+			const float distance = lightToVertex.Length();
+			lightDir = lightToVertex * (-1.f / distance);
+
+			// using simplified attenuation
+			attenuation = 1.f / (1.f + 0.09f * distance + 0.032f * distance * distance);
+		}
+		else if (auto dirLight = std::dynamic_pointer_cast<DirectionalLight>(light))
+		{
+			lightDir = -(dirLight->direction).Normal();
+		}
+		else if (auto spotLight = std::dynamic_pointer_cast<SpotLight>(light))
+		{
+			rtx::Vector3 lightToVertex = vertex.position - spotLight->position;
+			const float distance = lightToVertex.Length();
+			lightDir = lightToVertex * (-1.f / distance);
+
+			const float cosAngle = lightDir.Dot(spotLight->direction.Normal());
+			const float cosCutoff = std::cos(spotLight->cutoff * PI / 180.f);
+
+			if (cosAngle < cosCutoff)
+				continue;
+
+			const float spotEffect = std::pow(std::max(cosAngle, 0.f), 8.f);
+
+			// using simplified attenuation
+			attenuation = spotEffect / (1.f + 0.09f * distance + 0.032f * distance * distance);
+		}
+
+		ambient = ambientLight * objectColor;
+
+		const float diff = std::max(vertex.normal.Dot(lightDir), 0.f);
+		diffuse = diffuseLight * objectColor * diff;
+
+		rtx::Vector3 viewDir = (cameraPosition - vertex.position).Normal();
+		rtx::Vector3 reflectDir = vertex.normal * (2.f * vertex.normal.Dot(lightDir)) - lightDir;
+		
+		const float spec = std::pow(std::max(viewDir.Dot(reflectDir), 0.f), shininess);
+		specular = specularLight * spec;
+
+		result = result + (ambient + diffuse + specular) * attenuation;
+	}
+
+	result.x = rtx::MathUtils::Clamp(result.x, 0.f, 1.f);
+	result.y = rtx::MathUtils::Clamp(result.y, 0.f, 1.f);
+	result.z = rtx::MathUtils::Clamp(result.z, 0.f, 1.f);
+	
+	vertex.color = Color(result).ToHex();
 }

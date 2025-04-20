@@ -6,6 +6,7 @@
 #include "../RasTerX/include/Matrix4.hpp"
 #include "Mesh.h"
 #include "Cone.h"
+#include "Light.h"
 
 #include <memory>
 
@@ -18,7 +19,7 @@ public:
 	void SetAspectRatio(const float aspect) { this->aspect = aspect; }
 	
 	void Render(const std::vector<std::shared_ptr<Mesh>>& meshes, 
-		const std::vector<rtx::Matrix4>& models, Color bgColor);
+		const std::vector<rtx::Matrix4>& models, const std::vector<std::shared_ptr<Light>>& lights, Color bgColor);
 
 	void Save(std::string fileName);
 
@@ -30,7 +31,11 @@ private:
 	float near = 0.01f;
 	float far = 100.f;
 
-	void RenderMesh(std::shared_ptr<Mesh> mesh, const rtx::Matrix4& model);
+	void RenderMesh(std::shared_ptr<Mesh> mesh, const rtx::Matrix4& model, 
+		const std::vector<std::shared_ptr<Light>>& lights);
 
-	void RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4& model, Color color = Color(Color::WHITE));
+	void RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4& model, 
+		const std::vector<std::shared_ptr<Light>>& lights, Color color = Color(Color::WHITE));
+
+	void CalculateLighting(Vertex& vertex, const std::vector<std::shared_ptr<Light>>& lights);
 };

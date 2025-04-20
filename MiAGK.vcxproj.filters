@@ -63,13 +63,13 @@
     <ClCompile Include="src\Cone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Sphere.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Torus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SphereMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -131,10 +131,22 @@
     <ClInclude Include="include\Cone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Sphere.h">
+    <ClInclude Include="include\Torus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Torus.h">
+    <ClInclude Include="include\SphereMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PointLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DirectionalLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SpotLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
