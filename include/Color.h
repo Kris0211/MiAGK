@@ -57,7 +57,7 @@ struct Color
 	static const unsigned int BLUE = 0xFF0000FF;
 
 	static const unsigned int BLACK = 0xFF000000;
-	static const unsigned int WHITE = 0xFF000000;
+	static const unsigned int WHITE = 0xFFFFFFFF;
 	static const unsigned int GRAY = 0xFF808080;
 
 	static const unsigned int CYAN = 0xFF00FFFF;

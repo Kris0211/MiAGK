@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 
 	rtx::Matrix4 sphereModel;
 	sphereModel.LoadIdentity();
-	sphereModel = sphereModel * VertexProcessor::Translate({ 0.f, 1.f, 0.f });
+	sphereModel = sphereModel * VertexProcessor::Translate(rtx::Vector3::Up());
 
 
 	Torus t(0.5f, 0.25f, 8, 6);
@@ -48,17 +48,20 @@ int main(int argc, char* argv[])
 
 	// Lights
 
-	PointLight pl;
-	DirectionalLight dl;
-	SpotLight sl;
+	rtx::Vector3 spotlightPosition(0.f, 1.f, -2.f);
+	rtx::Vector3 spotlightDirection = (spotlightPosition - rtx::Vector3::Up()).Normal();
+
+	PointLight pl(rtx::Vector3(0.f, 0.f, -5.f));
+	//DirectionalLight dl;
+	SpotLight sl(spotlightPosition, spotlightDirection, 20.f);
 
 	std::shared_ptr<PointLight> pointLight = std::make_shared<PointLight>(pl);
-	std::shared_ptr<DirectionalLight> dirLight = std::make_shared<DirectionalLight>(dl);
+	//std::shared_ptr<DirectionalLight> dirLight = std::make_shared<DirectionalLight>(dl);
 	std::shared_ptr<SpotLight> spotLight = std::make_shared<SpotLight>(sl);
 
 	std::vector<std::shared_ptr<Mesh>> meshes = { cone, sphere, torus };
 	std::vector<rtx::Matrix4> models = { coneModel, sphereModel, torusModel };
-	std::vector<std::shared_ptr<Light>> sceneLights = { pointLight, dirLight, spotLight };
+	std::vector<std::shared_ptr<Light>> sceneLights = { pointLight, spotLight };
 
 	rasterizer.Render(meshes, models, sceneLights, Color(Color::GRAY));
 	rasterizer.Save("image.tga");
