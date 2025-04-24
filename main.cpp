@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 
 	rtx::Matrix4 sphereModel;
 	sphereModel.LoadIdentity();
-	sphereModel = sphereModel * VertexProcessor::Translate(rtx::Vector3::Up());
+	sphereModel = sphereModel * VertexProcessor::Translate({0.f, 0.9f, 0.f});
 
 
 	Torus t(0.5f, 0.25f, 8, 6);
@@ -48,12 +48,9 @@ int main(int argc, char* argv[])
 
 	// Lights
 
-	rtx::Vector3 spotlightPosition(0.f, 1.f, -2.f);
-	rtx::Vector3 spotlightDirection = (spotlightPosition - rtx::Vector3::Up()).Normal();
-
-	PointLight pl(rtx::Vector3(0.f, 0.f, -5.f));
+	PointLight pl(rtx::Vector3(-0.8f, -0.8f, 0.0f));
 	//DirectionalLight dl;
-	SpotLight sl(spotlightPosition, spotlightDirection, 20.f);
+	SpotLight sl({2.f, 1.f, 0.f}, rtx::Vector3::Right(), 15.f);
 
 	std::shared_ptr<PointLight> pointLight = std::make_shared<PointLight>(pl);
 	//std::shared_ptr<DirectionalLight> dirLight = std::make_shared<DirectionalLight>(dl);

@@ -12,8 +12,8 @@ public:
 	float shininess;
 
 	Light() : 
-		ambient(0.4f, 0.4f, 0.4f), 
-		diffuse(0.6f, 0.6f, 0.6f), 
+		ambient(0.2f, 0.2f, 0.2f), 
+		diffuse(0.8f, 0.8f, 0.8f), 
 		specular(0.1f, 0.1f, 0.1f),
 		shininess(0.f)
 	{}
