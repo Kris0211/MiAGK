@@ -11,19 +11,19 @@ Cone::Cone(const float radius, const float height, const int sectors) {
         rtx::Vector3 sideNormal = (p1 - p0).Cross(rtx::Vector3(0.f, -height, 0.f)).Normal();
 
         Vertex v1(p1, sideNormal, Color(Color::RED));
-        Vertex v2(rtx::Vector3(0.0f, height, 0.0f), baseNormal, Color(Color::GREEN));
-        Vertex v3(p0, sideNormal, Color(Color::BLUE));
+        Vertex v2(rtx::Vector3(0.0f, height, 0.0f), baseNormal, Color(Color::RED));
+        Vertex v3(p0, sideNormal, Color(Color::RED));
 
         Vertex v4(p0, sideNormal, Color(Color::RED));
-        Vertex v5(rtx::Vector3::Zero(), -rtx::Vector3::Up(), Color(Color::GREEN));
-        Vertex v6(p1, sideNormal, Color(Color::BLUE));
+        Vertex v5(rtx::Vector3::Zero(), -rtx::Vector3::Up(), Color(Color::RED));
+        Vertex v6(p1, sideNormal, Color(Color::RED));
 
         triangles.emplace_back(v1, v2, v3);
         triangles.emplace_back(v4, v5, v6);
     }
 
     rtx::Vector3 topNormal = -rtx::Vector3::Up();
-    Vertex top_vertex(rtx::Vector3(0.0f, height, 0.0f), topNormal, Color(Color::WHITE));
+    Vertex top_vertex(rtx::Vector3(0.0f, height, 0.0f), topNormal, Color(Color::RED));
 
     vertices.push_back(top_vertex);
 }

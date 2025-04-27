@@ -35,31 +35,31 @@ SphereMesh::SphereMesh(const float radius, const int sectors, const int stacks)
             {
                 rtx::Vector3 top{ 0.0f, radius, 0.0f };
                 triangles.emplace_back(
-                    Vertex(top, top.Normal(), Color(Color::RED)),
+                    Vertex(top, top.Normal(), Color(Color::GREEN)),
                     Vertex(p2, n2, Color(Color::GREEN)),
-                    Vertex(p3, n3, Color(Color::BLUE))
+                    Vertex(p3, n3, Color(Color::GREEN))
                 );
             }
             else if (i == (stacks - 1))
             {
                 rtx::Vector3 bot{ 0.0f, -radius, 0.0f };
                 triangles.emplace_back(
-                    Vertex(p2, n2, Color(Color::RED)),
+                    Vertex(p2, n2, Color(Color::GREEN)),
                     Vertex(bot, bot.Normal(), Color(Color::GREEN)),
-                    Vertex(p1, n1, Color(Color::BLUE))
+                    Vertex(p1, n1, Color(Color::GREEN))
                 );
             }
             else
             {
                 triangles.emplace_back(
-                    Vertex(p1, n1, Color(Color::RED)),
+                    Vertex(p1, n1, Color(Color::GREEN)),
                     Vertex(p2, n2, Color(Color::GREEN)),
-                    Vertex(p3, n3, Color(Color::BLUE))
+                    Vertex(p3, n3, Color(Color::GREEN))
                 );
                 triangles.emplace_back(
-                    Vertex(p1, n1, Color(Color::RED)),
+                    Vertex(p1, n1, Color(Color::GREEN)),
                     Vertex(p3, n3, Color(Color::GREEN)),
-                    Vertex(p4, n4, Color(Color::BLUE))
+                    Vertex(p4, n4, Color(Color::GREEN))
                 );
             }
         }

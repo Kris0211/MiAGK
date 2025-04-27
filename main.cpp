@@ -19,22 +19,36 @@ int main(int argc, char* argv[])
 	Rasterizer rasterizer(imgWidth, imgHeight);
 
 	// Meshes
-
 	Cone c(0.25f, 1.f, 12);
 	std::shared_ptr<Cone> cone = std::make_shared<Cone>(c);
 
 	rtx::Matrix4 coneModel;
 	coneModel.LoadIdentity();
+	coneModel = coneModel * VertexProcessor::Translate({ -0.5f, 1.f, 0.f });
 	coneModel = coneModel * VertexProcessor::Rotate(30.f, rtx::Vector3::Right());
 	coneModel = coneModel * VertexProcessor::Rotate(-45.f, rtx::Vector3::Forward());
-	coneModel = coneModel * VertexProcessor::Translate({ -0.5f, 1.f, 0.f });
+
+	Renderable coneRenderable(cone, coneModel, true);
+
 
 	SphereMesh s(0.5f, 8, 8);
 	std::shared_ptr<SphereMesh> sphere = std::make_shared<SphereMesh>(s);
 
 	rtx::Matrix4 sphereModel;
 	sphereModel.LoadIdentity();
-	sphereModel = sphereModel * VertexProcessor::Translate({0.f, 0.9f, 0.f});
+	sphereModel = sphereModel * VertexProcessor::Translate({0.8f, 0.9f, 0.f});
+
+	Renderable sphereRenderable(sphere, sphereModel, true);
+
+
+	SphereMesh s2(0.5f, 8, 8);
+	std::shared_ptr<SphereMesh> sphere2 = std::make_shared<SphereMesh>(s2);
+
+	rtx::Matrix4 secondSphereModel;
+	secondSphereModel.LoadIdentity();
+	secondSphereModel = secondSphereModel * VertexProcessor::Translate({ 0.8f, -0.9f, 0.f });
+
+	Renderable secondSphereRenderable(sphere2, secondSphereModel, false);
 
 
 	Torus t(0.5f, 0.25f, 8, 6);
@@ -44,23 +58,29 @@ int main(int argc, char* argv[])
 	torusModel.LoadIdentity();
 	torusModel = torusModel * VertexProcessor::Rotate(30.f, rtx::Vector3::Right());
 	torusModel = torusModel * VertexProcessor::Rotate(60.f, rtx::Vector3::Forward());
-	torusModel = torusModel * VertexProcessor::Translate({ 1.f, -0.5f, 0.f });
+	torusModel = torusModel * VertexProcessor::Translate({ 1.f, -1.5f, 2.f });
+
+	Renderable torusRenderable(torus, torusModel, true);
+
 
 	// Lights
-
-	PointLight pl(rtx::Vector3(-0.8f, -0.8f, 0.0f));
-	//DirectionalLight dl;
-	SpotLight sl({2.f, 1.f, 0.f}, rtx::Vector3::Right(), 15.f);
+	PointLight pl(rtx::Vector3(0.f, 0.f, 1.f));
+	DirectionalLight dl(rtx::Vector3::Right());
+	//SpotLight sl({0.f, 0.7f, 2.f}, rtx::Vector3::Forward(), 15.f);
 
 	std::shared_ptr<PointLight> pointLight = std::make_shared<PointLight>(pl);
-	//std::shared_ptr<DirectionalLight> dirLight = std::make_shared<DirectionalLight>(dl);
-	std::shared_ptr<SpotLight> spotLight = std::make_shared<SpotLight>(sl);
+	std::shared_ptr<DirectionalLight> dirLight = std::make_shared<DirectionalLight>(dl);
+	//std::shared_ptr<SpotLight> spotLight = std::make_shared<SpotLight>(sl);
 
-	std::vector<std::shared_ptr<Mesh>> meshes = { cone, sphere, torus };
-	std::vector<rtx::Matrix4> models = { coneModel, sphereModel, torusModel };
-	std::vector<std::shared_ptr<Light>> sceneLights = { pointLight, spotLight };
 
-	rasterizer.Render(meshes, models, sceneLights, Color(Color::GRAY));
+	std::vector<Renderable> renderables = { coneRenderable, sphereRenderable, torusRenderable, secondSphereRenderable };
+	//std::vector<Renderable> renderables = { sphereRenderable, secondSphereRenderable };
+	
+	std::vector<std::shared_ptr<Light>> sceneLights = { pointLight };
+	//std::vector<std::shared_ptr<Light>> sceneLights = { dirLight };
+	//std::vector<std::shared_ptr<Light>> sceneLights = { pointLight, dirLight };
+
+	rasterizer.Render(renderables, sceneLights, Color(Color::GRAY));
 	rasterizer.Save("image.tga");
 
 	return 0;

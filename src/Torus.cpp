@@ -20,10 +20,10 @@ Torus::Torus(const float majorRadius, const float minorRadius,
             rtx::Vector3 p3 = CalculateTorusPoint(majorRadius, minorRadius, majorAngle2, minorAngle2);
             rtx::Vector3 p4 = CalculateTorusPoint(majorRadius, minorRadius, majorAngle2, minorAngle1);
 
-            Vertex v1 = { p1, CalculateNormal(p1, majorRadius, minorRadius), Color(Color::RED)};
-            Vertex v2 = { p2, CalculateNormal(p2, majorRadius, minorRadius), Color(Color::GREEN) };
+            Vertex v1 = { p1, CalculateNormal(p1, majorRadius, minorRadius), Color(Color::BLUE)};
+            Vertex v2 = { p2, CalculateNormal(p2, majorRadius, minorRadius), Color(Color::BLUE) };
             Vertex v3 = { p3, CalculateNormal(p3, majorRadius, minorRadius), Color(Color::BLUE) };
-            Vertex v4 = { p4, CalculateNormal(p4, majorRadius, minorRadius), Color(Color::GREEN) };
+            Vertex v4 = { p4, CalculateNormal(p4, majorRadius, minorRadius), Color(Color::BLUE) };
 
             triangles.emplace_back(v2, v1, v3);
             triangles.emplace_back(v3, v1, v4);

@@ -158,6 +158,7 @@
     <ClInclude Include="include\MeshTriangle.h" />
     <ClInclude Include="include\PointLight.h" />
     <ClInclude Include="include\Rasterizer.h" />
+    <ClInclude Include="include\Renderable.h" />
     <ClInclude Include="include\SphereMesh.h" />
     <ClInclude Include="include\SpotLight.h" />
     <ClInclude Include="include\Torus.h" />

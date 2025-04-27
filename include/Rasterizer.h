@@ -9,6 +9,7 @@
 #include "Light.h"
 
 #include <memory>
+#include "Renderable.h"
 
 class Rasterizer 
 {
@@ -18,8 +19,8 @@ public:
 	void SetFov(const float fov) { this->fov = fov; }
 	void SetAspectRatio(const float aspect) { this->aspect = aspect; }
 	
-	void Render(const std::vector<std::shared_ptr<Mesh>>& meshes, 
-		const std::vector<rtx::Matrix4>& models, const std::vector<std::shared_ptr<Light>>& lights, Color bgColor);
+	void Render(const std::vector<Renderable>& renderables,
+		const std::vector<std::shared_ptr<Light>>& lights, Color bgColor);
 
 	void Save(std::string fileName);
 
@@ -32,10 +33,18 @@ private:
 	float far = 100.f;
 
 	void RenderMesh(std::shared_ptr<Mesh> mesh, const rtx::Matrix4& model, 
-		const std::vector<std::shared_ptr<Light>>& lights);
+		const std::vector<std::shared_ptr<Light>>& lights, bool usePixelLighting = false);
 
 	void RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4& model, 
-		const std::vector<std::shared_ptr<Light>>& lights, Color color = Color(Color::WHITE));
+		const std::vector<std::shared_ptr<Light>>& lights, Color color = Color(Color::WHITE), 
+		bool usePixelLighting = true);
 
-	void CalculateLighting(Vertex& vertex, const std::vector<std::shared_ptr<Light>>& lights);
+	void CalculateVertexLighting(Vertex& ref_Vertex, const rtx::Matrix4& model, 
+		const std::vector<std::shared_ptr<Light>>& lights);
+
+	rtx::Vector3 CalculatePixelLighting(const rtx::Vector3& pixelPosition,
+		const rtx::Vector3& pixelNormal, const rtx::Vector3& objectColor,
+		const std::vector<std::shared_ptr<Light>>& lights);
+
+	rtx::Vector3 InterpolateColor(const MeshTriangle& triangle, float barU, float barV, float barW);
 };
