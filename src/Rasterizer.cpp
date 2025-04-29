@@ -154,14 +154,6 @@ void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4
 				if (currentDepth < screenDepth)
 				{
 					rtx::Vector3 pixelColor = Color(Color::RED).ToVector();
-					if (isLit) 
-					{
-						pixelColor = Color(Color::RED).ToVector();
-					}
-					else 
-					{
-						pixelColor = Color(Color::BLUE).ToVector();
-					}
 					bool textureApplied = false;
 
 					if (texture != nullptr && triangle.tex.size() >= 3) 
