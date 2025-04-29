@@ -18,6 +18,7 @@ public:
 	float GetDepthAt(int x, int y) const { return _depthBuffer[x + _sizeX * y]; }
 
 	unsigned int GetColorHex(const int index) { return _colorBuffer[index]; };
+	unsigned int GetColorAt(int u, int v) { return _colorBuffer[u + _sizeX * v]; };
 
 	int GetSizeX() const { return _sizeX; }
 	int GetSizeY() const { return _sizeY; }

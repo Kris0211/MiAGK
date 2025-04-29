@@ -15,7 +15,7 @@ Rasterizer::Rasterizer(const int sizeX, const int sizeY)
 
 
 void Rasterizer::Render(const std::vector<Renderable>& renderables,
-	const std::vector<std::shared_ptr<Light>>& lights,	Color bgColor)
+	const std::vector<std::shared_ptr<Light>>& lights, Color bgColor)
 {
 	_colorBuffer.FillColor(bgColor.ToHex());
 	_colorBuffer.FillDepth(FLT_MAX);
@@ -144,45 +144,59 @@ void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4
 				&& (edge2 > 0 || (edge2 >= 0 && tl2))
 				&& (edge3 > 0 || (edge3 >= 0 && tl3)))
 			{
-
 				const float barU = (dy23 * dxs3 + dx32 * dys3) * ud;
 				const float barV = (dy31 * dxs3 + dx13 * dys3) * vd;
 				const float barW = 1.f - barU - barV;
 
 				const float screenDepth = _colorBuffer.GetDepthAt(screenX, screenY);
 				const float currentDepth = barU * z1 + barV * z2 + barW * z3;
-				if (currentDepth < screenDepth) 
+
+				if (currentDepth < screenDepth)
 				{
-					rtx::Vector2 uv1 = triangle.tex[0];
-					rtx::Vector2 uv2 = triangle.tex[1];
-					rtx::Vector2 uv3 = triangle.tex[2];
-
-					rtx::Vector2 uv = uv1 * barU + uv2 * barV + uv3 * barW;
-
-					if (uv.x < 0.0f) uv.x = 0.0f;
-					if (uv.x > 1.0f) uv.x = 1.0f;
-					if (uv.y < 0.0f) uv.y = 0.0f;
-					if (uv.y > 1.0f) uv.y = 1.0f;
-
-					rtx::Vector3 pixelColor = rtx::Vector3::Zero();
-
-					if (texture != nullptr)
+					rtx::Vector3 pixelColor = Color(Color::RED).ToVector();
+					if (isLit) 
 					{
-						int texX = static_cast<int>(uv.x * (texture->GetSizeX() - 1));
-						int texY = static_cast<int>(uv.y * (texture->GetSizeY() - 1));
-						int texIdx = texX + texY * texture->GetSizeX();
-
-						unsigned int colorRaw = texture->GetColorHex(texIdx);
-						pixelColor = Color(colorRaw).ToVector();
+						pixelColor = Color(Color::RED).ToVector();
 					}
-					else
+					else 
 					{
-						pixelColor = fallbackColor.ToVector();
+						pixelColor = Color(Color::BLUE).ToVector();
+					}
+					bool textureApplied = false;
+
+					if (texture != nullptr && triangle.tex.size() >= 3) 
+					{
+						rtx::Vector2 uv1 = triangle.tex[0];
+						rtx::Vector2 uv2 = triangle.tex[1];
+						rtx::Vector2 uv3 = triangle.tex[2];
+						rtx::Vector2 uv = uv1 * barU + uv2 * barV + uv3 * barW;
+
+						uv.x = rtx::MathUtils::Clamp(uv.x, 0.f, 1.f);
+						uv.y = rtx::MathUtils::Clamp(uv.y, 0.f, 1.f);
+
+						if (texture->GetSizeX() > 0 && texture->GetSizeY() > 0) 
+						{
+							int u = static_cast<int>(uv.x * (texture->GetSizeX() - 1));
+							int v = static_cast<int>(uv.y * (texture->GetSizeY() - 1));
+							int tex = u + v * texture->GetSizeX();
+
+							if (tex >= 0 && tex < texture->GetSizeX() * texture->GetSizeY()) 
+							{
+								unsigned int colorRaw = texture->GetColorHex(tex);
+								pixelColor = Color(colorRaw).ToVector();
+								textureApplied = true;
+							}
+						}
 					}
 
-					if (isLit)
+					if (!textureApplied && isLit) 
 					{
-						if (usePixelLighting) // Phong (pixel lighting)
+						pixelColor = InterpolateColor(triangle, barU, barV, barW);
+					}
+
+					if (isLit) 
+					{
+						if (usePixelLighting) // Phong (pixe lighting)
 						{
 							rtx::Vector3 pixelWorldPos =
 								worldPositions[0] * barU +
@@ -195,14 +209,16 @@ void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4
 								worldNormals[2] * barW;
 
 							pixelNormal = pixelNormal.Normal();
-
 							pixelColor = CalculatePixelLighting(pixelWorldPos, pixelNormal,
-								InterpolateColor(triangle, barU, barV, barW), lights);
-
+								pixelColor, lights);
+							
 						}
-						else // Gouraud (vertex lighing)
+						else // Gouraud (vertex lighting)
 						{
-							pixelColor = InterpolateColor(triangle, barU, barV, barW);
+							if (textureApplied) 
+							{
+								pixelColor = pixelColor * InterpolateColor(triangle, barU, barV, barW);
+							}
 						}
 					}
 

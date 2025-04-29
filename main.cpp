@@ -48,6 +48,8 @@ int main(int argc, char* argv[])
 
 	rtx::Matrix4 sphereModel;
 	sphereModel.LoadIdentity();
+	sphereModel = sphereModel * VertexProcessor::Rotate(45.f, rtx::Vector3::Right());
+	//sphereModel = sphereModel * VertexProcessor::Rotate(45.f, rtx::Vector3::Up());
 	sphereModel = sphereModel * VertexProcessor::Translate({0.f, 0.8f, 0.f});
 
 	Renderable sphereRenderable(sphere, sphereModel, &tex1, false, false);
@@ -58,10 +60,11 @@ int main(int argc, char* argv[])
 
 	rtx::Matrix4 secondSphereModel;
 	secondSphereModel.LoadIdentity();
+	secondSphereModel = secondSphereModel * VertexProcessor::Rotate(45.f, rtx::Vector3::Right());
+	//secondSphereModel = secondSphereModel * VertexProcessor::Rotate(45.f, rtx::Vector3::Up());
 	secondSphereModel = secondSphereModel * VertexProcessor::Translate({ -0.7f, -0.4f, 0.f });
 
 	Renderable secondSphereRenderable(sphere2, secondSphereModel, &tex1);
-
 
 
 	SphereMesh s3(0.5f, 8, 8);
@@ -69,6 +72,8 @@ int main(int argc, char* argv[])
 
 	rtx::Matrix4 thirdSphereModel;
 	thirdSphereModel.LoadIdentity();
+	thirdSphereModel = thirdSphereModel * VertexProcessor::Rotate(45.f, rtx::Vector3::Right());
+	//thirdSphereModel = thirdSphereModel * VertexProcessor::Rotate(45.f, rtx::Vector3::Up());
 	thirdSphereModel = thirdSphereModel * VertexProcessor::Translate({ 0.7f, -0.4f, 0.f });
 
 	Renderable thirdSphereRenderable(sphere3, thirdSphereModel, &tex2);
@@ -86,11 +91,11 @@ int main(int argc, char* argv[])
 
 
 	// Lights
-	PointLight pl(rtx::Vector3(0.f, 0.f, 1.f));
+	//PointLight pl(rtx::Vector3(0.f, 0.f, 1.f));
 	DirectionalLight dl(rtx::Vector3::Right());
 	//SpotLight sl({0.f, 0.7f, 2.f}, rtx::Vector3::Forward(), 15.f);
 
-	std::shared_ptr<PointLight> pointLight = std::make_shared<PointLight>(pl);
+	//std::shared_ptr<PointLight> pointLight = std::make_shared<PointLight>(pl);
 	std::shared_ptr<DirectionalLight> dirLight = std::make_shared<DirectionalLight>(dl);
 	//std::shared_ptr<SpotLight> spotLight = std::make_shared<SpotLight>(sl);
 

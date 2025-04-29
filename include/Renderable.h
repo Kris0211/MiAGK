@@ -13,16 +13,11 @@ struct Renderable
     bool isLit;
 
     Renderable(const std::shared_ptr<Mesh>& mesh, const rtx::Matrix4& model, 
-        Buffer* texture = nullptr, bool usePixelLighting = false, bool isLit = true) : 
+        Buffer* texture = nullptr, bool usePixelLighting = true, bool isLit = true) : 
             texture(texture), 
             model(model), 
             mesh(mesh), 
             usePixelLighting(usePixelLighting), 
             isLit(isLit)
     {}
-
-    ~Renderable()
-    {
-        texture = nullptr;
-    }
 };
