@@ -15,7 +15,8 @@ MeshTriangle::MeshTriangle()
 }
 
 
-MeshTriangle::MeshTriangle(const Vertex& vertex1, const Vertex& vertex2, const Vertex& vertex3)
+MeshTriangle::MeshTriangle(const Vertex& vertex1, const Vertex& vertex2, const Vertex& vertex3,
+    const rtx::Vector2& t1, const rtx::Vector2& t2, const rtx::Vector2& t3)
 {
     vertices.push_back(vertex1);
     vertices.push_back(vertex2);
@@ -24,6 +25,10 @@ MeshTriangle::MeshTriangle(const Vertex& vertex1, const Vertex& vertex2, const V
     colors.push_back(vertex1.color);
     colors.push_back(vertex2.color);
     colors.push_back(vertex3.color);
+
+    tex.push_back(t1);
+    tex.push_back(t2);
+    tex.push_back(t3);
 
     indices.push_back(rtx::Vector3(0, 1, 2));
 }

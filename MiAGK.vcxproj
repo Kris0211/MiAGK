@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="RasTerX\src\Vector2.cpp" />
     <ClCompile Include="src\Torus.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Cone.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="RasTerX\include\Ray.hpp" />
     <ClInclude Include="RasTerX\include\Sphere.hpp" />
     <ClInclude Include="RasTerX\include\Triangle.hpp" />
+    <ClInclude Include="RasTerX\include\Vector2.hpp" />
     <ClInclude Include="RasTerX\include\Vector3.hpp" />
     <ClInclude Include="RasTerX\include\Vector4.hpp" />
   </ItemGroup>

@@ -6,6 +6,8 @@ class Buffer
 public:
 	Buffer(const int x, const int y);
 
+	bool OpenImage(const char* filename, const unsigned int width, const unsigned int height);
+
 	void FillColor(const unsigned int color);
 	void SetPixel(const int x, const int y, const unsigned int color);
 
@@ -14,6 +16,8 @@ public:
 
 	std::vector<int>& GetColorData() { return _colorBuffer; }
 	float GetDepthAt(int x, int y) const { return _depthBuffer[x + _sizeX * y]; }
+
+	unsigned int GetColorHex(const int index) { return _colorBuffer[index]; };
 
 	int GetSizeX() const { return _sizeX; }
 	int GetSizeY() const { return _sizeY; }

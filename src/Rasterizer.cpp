@@ -22,7 +22,8 @@ void Rasterizer::Render(const std::vector<Renderable>& renderables,
 
 	for (int i = 0; i < renderables.size(); i++)
 	{
-		RenderMesh(renderables[i].mesh, renderables[i].model, lights, renderables[i].usePixelLighting);
+		RenderMesh(renderables[i].mesh, renderables[i].model, lights,
+			renderables[i].texture, renderables[i].usePixelLighting, renderables[i].isLit);
 	}
 }
 
@@ -32,26 +33,28 @@ void Rasterizer::Save(std::string fileName)
 		_colorBuffer.GetSizeX(), _colorBuffer.GetSizeY());
 }
 
-void Rasterizer::RenderMesh(std::shared_ptr<Mesh> mesh, const rtx::Matrix4& model, 
-	const std::vector<std::shared_ptr<Light>>& lights, bool usePixelLighting)
+void Rasterizer::RenderMesh(std::shared_ptr<Mesh> mesh, const rtx::Matrix4& model,
+	const std::vector<std::shared_ptr<Light>>& lights, Buffer* texture,
+	bool usePixelLighting, bool isLit)
 {
 	for (auto& triangle : mesh->triangles)
 	{
 		MeshTriangle mTriangle = triangle;
 		
-		if (!usePixelLighting)
+		if (!usePixelLighting && isLit)
 		{
 			CalculateVertexLighting(mTriangle.vertices[0], model, lights);
 			CalculateVertexLighting(mTriangle.vertices[1], model, lights);
 			CalculateVertexLighting(mTriangle.vertices[2], model, lights);
 		}		
 
-		RenderTriangle(mTriangle, model, lights, usePixelLighting);
+		RenderTriangle(mTriangle, model, lights, texture, usePixelLighting, isLit);
 	}
 }
 
-void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4& model, 
-	const std::vector<std::shared_ptr<Light>>& lights, Color color, bool usePixelLighting)
+void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4& model,
+	const std::vector<std::shared_ptr<Light>>& lights, Buffer* texture,
+	bool usePixelLighting, bool isLit, Color fallbackColor)
 {
 	const int width = _colorBuffer.GetSizeX();
 	const int height = _colorBuffer.GetSizeY();
@@ -125,7 +128,7 @@ void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4
 		rtx::Vector4 worldNorm = normalMatrix * rtx::Vector4(triangle.vertices[i].normal, 0.f);
 		worldNormals[i] = rtx::Vector3(worldNorm.x, worldNorm.y, worldNorm.z).Normal();
 	}
-
+	
 	for (int screenY = minY; screenY < maxY; ++screenY) 
 	{
 		for (int screenX = minX; screenX < maxX; ++screenX) 
@@ -150,28 +153,57 @@ void Rasterizer::RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4
 				const float currentDepth = barU * z1 + barV * z2 + barW * z3;
 				if (currentDepth < screenDepth) 
 				{
+					rtx::Vector2 uv1 = triangle.tex[0];
+					rtx::Vector2 uv2 = triangle.tex[1];
+					rtx::Vector2 uv3 = triangle.tex[2];
+
+					rtx::Vector2 uv = uv1 * barU + uv2 * barV + uv3 * barW;
+
+					if (uv.x < 0.0f) uv.x = 0.0f;
+					if (uv.x > 1.0f) uv.x = 1.0f;
+					if (uv.y < 0.0f) uv.y = 0.0f;
+					if (uv.y > 1.0f) uv.y = 1.0f;
+
 					rtx::Vector3 pixelColor = rtx::Vector3::Zero();
 
-					if (usePixelLighting) // Phong (pixel lighting)
+					if (texture != nullptr)
 					{
-						rtx::Vector3 pixelWorldPos = 
-							worldPositions[0] * barU + 
-							worldPositions[1] * barV +
-							worldPositions[2] * barW;
+						int texX = static_cast<int>(uv.x * (texture->GetSizeX() - 1));
+						int texY = static_cast<int>(uv.y * (texture->GetSizeY() - 1));
+						int texIdx = texX + texY * texture->GetSizeX();
 
-						rtx::Vector3 pixelNormal =
-							worldNormals[0] * barU + 
-							worldNormals[1] * barV + 
-							worldNormals[2] * barW;
-
-						pixelNormal = pixelNormal.Normal();
-
-						pixelColor = CalculatePixelLighting(pixelWorldPos, pixelNormal, 
-							InterpolateColor(triangle, barU, barV, barW), lights);
+						unsigned int colorRaw = texture->GetColorHex(texIdx);
+						pixelColor = Color(colorRaw).ToVector();
 					}
-					else // Gouraud (vertex lighing)
+					else
 					{
-						pixelColor = InterpolateColor(triangle, barU, barV, barW);
+						pixelColor = fallbackColor.ToVector();
+					}
+
+					if (isLit)
+					{
+						if (usePixelLighting) // Phong (pixel lighting)
+						{
+							rtx::Vector3 pixelWorldPos =
+								worldPositions[0] * barU +
+								worldPositions[1] * barV +
+								worldPositions[2] * barW;
+
+							rtx::Vector3 pixelNormal =
+								worldNormals[0] * barU +
+								worldNormals[1] * barV +
+								worldNormals[2] * barW;
+
+							pixelNormal = pixelNormal.Normal();
+
+							pixelColor = CalculatePixelLighting(pixelWorldPos, pixelNormal,
+								InterpolateColor(triangle, barU, barV, barW), lights);
+
+						}
+						else // Gouraud (vertex lighing)
+						{
+							pixelColor = InterpolateColor(triangle, barU, barV, barW);
+						}
 					}
 
 					_colorBuffer.SetPixel(screenX, screenY, Color(pixelColor).ToHex());

@@ -6,11 +6,23 @@
 
 struct Renderable
 {
-    std::shared_ptr<Mesh> mesh;
+    Buffer* texture;
     rtx::Matrix4 model;
+    std::shared_ptr<Mesh> mesh;
     bool usePixelLighting;
+    bool isLit;
 
-    Renderable(const std::shared_ptr<Mesh>& mesh, const rtx::Matrix4& model, bool usePixelLighting = false)
-        : mesh(mesh), model(model), usePixelLighting(usePixelLighting) 
+    Renderable(const std::shared_ptr<Mesh>& mesh, const rtx::Matrix4& model, 
+        Buffer* texture = nullptr, bool usePixelLighting = false, bool isLit = true) : 
+            texture(texture), 
+            model(model), 
+            mesh(mesh), 
+            usePixelLighting(usePixelLighting), 
+            isLit(isLit)
     {}
+
+    ~Renderable()
+    {
+        texture = nullptr;
+    }
 };

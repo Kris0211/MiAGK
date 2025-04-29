@@ -32,12 +32,13 @@ private:
 	float near = 0.01f;
 	float far = 100.f;
 
-	void RenderMesh(std::shared_ptr<Mesh> mesh, const rtx::Matrix4& model, 
-		const std::vector<std::shared_ptr<Light>>& lights, bool usePixelLighting = false);
+	void RenderMesh(std::shared_ptr<Mesh> mesh, const rtx::Matrix4& model,
+		const std::vector<std::shared_ptr<Light>>& lights, Buffer* texture = nullptr,
+		bool usePixelLighting = true, bool isLit = true);
 
-	void RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4& model, 
-		const std::vector<std::shared_ptr<Light>>& lights, Color color = Color(Color::WHITE), 
-		bool usePixelLighting = true);
+	void RenderTriangle(const MeshTriangle& triangle, const rtx::Matrix4& model,
+		const std::vector<std::shared_ptr<Light>>& lights, Buffer* texture = nullptr,
+		bool usePixelLighting = true, bool isLit = true, Color fallbackColor = Color(Color::WHITE));
 
 	void CalculateVertexLighting(Vertex& ref_Vertex, const rtx::Matrix4& model, 
 		const std::vector<std::shared_ptr<Light>>& lights);

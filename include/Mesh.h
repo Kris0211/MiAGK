@@ -15,6 +15,7 @@ public:
     std::vector<MeshTriangle> triangles;
     std::vector<Vertex> vertices;
     std::vector<rtx::Vector3> indices;
+    std::vector<rtx::Vector2> tex;
 
     Mesh() = default;
     virtual ~Mesh() = default;

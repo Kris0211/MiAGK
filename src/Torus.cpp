@@ -20,13 +20,22 @@ Torus::Torus(const float majorRadius, const float minorRadius,
             rtx::Vector3 p3 = CalculateTorusPoint(majorRadius, minorRadius, majorAngle2, minorAngle2);
             rtx::Vector3 p4 = CalculateTorusPoint(majorRadius, minorRadius, majorAngle2, minorAngle1);
 
-            Vertex v1 = { p1, CalculateNormal(p1, majorRadius, minorRadius), Color(Color::BLUE)};
-            Vertex v2 = { p2, CalculateNormal(p2, majorRadius, minorRadius), Color(Color::BLUE) };
-            Vertex v3 = { p3, CalculateNormal(p3, majorRadius, minorRadius), Color(Color::BLUE) };
-            Vertex v4 = { p4, CalculateNormal(p4, majorRadius, minorRadius), Color(Color::BLUE) };
+            Vertex v1 = { p1, CalculateNormal(p1, majorRadius, minorRadius)};
+            Vertex v2 = { p2, CalculateNormal(p2, majorRadius, minorRadius)};
+            Vertex v3 = { p3, CalculateNormal(p3, majorRadius, minorRadius)};
+            Vertex v4 = { p4, CalculateNormal(p4, majorRadius, minorRadius)};
 
-            triangles.emplace_back(v2, v1, v3);
-            triangles.emplace_back(v3, v1, v4);
+            const unsigned int texWidth = 1;
+            const unsigned int texHeight = 1;
+
+
+            rtx::Vector2 t1 = TexCoords(majorAngle1, minorAngle1, texWidth, texHeight);
+            rtx::Vector2 t2 = TexCoords(majorAngle1, minorAngle2, texWidth, texHeight);
+            rtx::Vector2 t3 = TexCoords(majorAngle2, minorAngle2, texWidth, texHeight);
+            rtx::Vector2 t4 = TexCoords(majorAngle2, minorAngle1, texWidth, texHeight);
+
+            triangles.emplace_back(v2, v1, v3, t2, t1, t3);
+            triangles.emplace_back(v3, v1, v4, t3, t1, t4);
         }
     }
 }
@@ -52,3 +61,14 @@ rtx::Vector3 Torus::CalculateNormal(const rtx::Vector3& point,
         point.z / minorRadius
     };
 }
+
+rtx::Vector2 Torus::TexCoords(const float majorAngle, const float minorAngle, const unsigned int texWidth, const unsigned int texHeight)
+{
+    float u = majorAngle / TAU;
+    float v = minorAngle / TAU;
+
+    u /= texWidth;
+    v /= texHeight;
+
+    return { u, v };
+};
